@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SmachChat</string>
+    <string name="type_a_message">Type a Message</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="empty_credentials_error">Username and password cannot be empty</string>
+    <string name="content_authority" translatable="false">presidente.oscar.smackchat</string>
+</resources>
