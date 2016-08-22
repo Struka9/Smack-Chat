@@ -34,6 +34,8 @@
             <EditText
                 android:id="@+id/et_message_to_send"
                 android:hint="@string/type_a_message"
+                android:singleLine="true"
+                android:imeOptions="actionSend"
                 android:layout_gravity="center_vertical"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_weight="1"

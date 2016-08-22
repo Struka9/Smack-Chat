@@ -10,8 +10,11 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -67,6 +70,17 @@ public class ConversationActivity extends AppCompatActivity implements LoaderMan
         }
 
         mTextToSend = (EditText)findViewById(R.id.et_message_to_send);
+        mTextToSend.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND && event.getAction() == KeyEvent.ACTION_UP) {
+                    sendMessage();
+                    return true;
+                }
+
+                return false;
+            }
+        });
         mEventBus = EventBus.getDefault();
 
         getSupportLoaderManager().initLoader(LOADER_URL, null, this);
@@ -88,27 +102,31 @@ public class ConversationActivity extends AppCompatActivity implements LoaderMan
         switch (v.getId()) {
             case R.id.fab_send_message:
 
-                String textToSend = mTextToSend.getText().toString().trim();
-
-                if (textToSend.length() == 0)return;
-
-                mTextToSend.setText("");
-
-                SendMessageEvent event = new SendMessageEvent();
-                MessageModel message = new MessageModel(textToSend, mTo, true, new Date());
-                event.message = message;
-
-                Uri uri = getContentResolver().insert(SmackChatContract.MessageContract.CONTENT_URI, Util.messageModelToContentValues(message));
-                long id = SmackChatContract.MessageContract.getIdFromUri(uri);
-                message.setId(id);
-
-                mEventBus.post(event);
+                sendMessage();
 
 
                 break;
             default:
                 break;
         }
+    }
+
+    private void sendMessage() {
+        String textToSend = mTextToSend.getText().toString().trim();
+
+        if (textToSend.length() == 0)return;
+
+        mTextToSend.setText("");
+
+        SendMessageEvent event = new SendMessageEvent();
+        MessageModel message = new MessageModel(textToSend, mTo, true, new Date());
+        event.message = message;
+
+        Uri uri = getContentResolver().insert(SmackChatContract.MessageContract.CONTENT_URI, Util.messageModelToContentValues(message));
+        long id = SmackChatContract.MessageContract.getIdFromUri(uri);
+        message.setId(id);
+
+        mEventBus.post(event);
     }
 
     @Subscribe

@@ -41,7 +41,6 @@ public class SmackService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        start();
         return Service.START_STICKY;
     }
 
